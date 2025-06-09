@@ -1,20 +1,20 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
+use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
-/*
-|--------------------------------------------------------------------------
-| Tenant Routes
-|--------------------------------------------------------------------------
-|
-| Here you can register the tenant routes for your application.
-| These routes are loaded by the TenancyServiceProvider and are
-| automatically scoped to the current tenant.
-|
-*/
-
-Route::middleware(['web'])->group(function () {
+// Applica il middleware solo se NON siamo su un dominio centrale
+Route::middleware([
+    InitializeTenancyByDomain::class,
+    PreventAccessFromCentralDomains::class,
+])->group(function () {
     Route::get('/', function () {
-        return 'This is tenant: ' . tenant('id');
-    });
+        // Se siamo qui, il tenant è inizializzato
+        return 'This is tenant: ' . tenant('id') . ' (' . tenant('name') . ')';
+    })->name('tenant.home');
+
+    Route::get('/dashboard', function () {
+        return 'Tenant Dashboard for: ' . tenant('name');
+    })->name('tenant.dashboard');
 });
