@@ -18,15 +18,18 @@ class LandlordSeeder extends Seeder
             ['name' => 'Archiviato', 'color' => '#blue', 'order' => 5],
         ];
 
+        $statusRecords = [];
         foreach ($statuses as $status) {
-            DB::table('default_document_statuses')->insert([
+            $statusRecords[] = [
                 'name' => $status['name'],
                 'color' => $status['color'],
                 'order' => $status['order'],
                 'created_at' => now(),
                 'updated_at' => now(),
-            ]);
+            ];
         }
+        
+        DB::table('default_document_statuses')->insert($statusRecords);
 
         // Classificazioni documento di default
         $classifications = [
@@ -54,15 +57,18 @@ class LandlordSeeder extends Seeder
                     ['name' => 'Formazione', 'order' => 4],
                 ];
 
+                $subRecords = [];
                 foreach ($subClassifications as $sub) {
-                    DB::table('default_document_classifications')->insert([
+                    $subRecords[] = [
                         'name' => $sub['name'],
                         'parent_id' => $parentId,
                         'order' => $sub['order'],
                         'created_at' => now(),
                         'updated_at' => now(),
-                    ]);
+                    ];
                 }
+                
+                DB::table('default_document_classifications')->insert($subRecords);
             }
         }
     }
